@@ -21,7 +21,7 @@ class CreateVentasTable extends Migration
 
         Schema::table('ventas', function (Blueprint $table) {
             $table->unsignedBigInteger('producto_id');
-            $table->foreign('producto_id')->references('id')->on('productos');
+            $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
         });
     }
 
