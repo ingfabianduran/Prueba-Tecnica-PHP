@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductoController extends Controller
 {
@@ -15,8 +16,21 @@ class ProductoController extends Controller
     public function index()
     {
         $productos = Producto::all();
+        $masStock = DB::table('productos')
+            ->orderBy('stock', 'desc')
+            ->limit(1)
+            ->get();
+        $masVendido = DB::table('ventas')
+            ->selectRaw('productos.nombre as nombre_producto, COUNT(ventas.producto_id) as total_compras')
+            ->join('productos', 'ventas.producto_id', 'productos.id')
+            ->orderBy('total_compras', 'desc')
+            ->groupBy('ventas.producto_id')
+            ->limit(1)
+            ->get();
         return response()->json([
             'productos' => $productos,
+            'stock' => $masStock,
+            'venta' => $masVendido
         ]);
     }
 
