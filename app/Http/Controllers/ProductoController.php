@@ -13,9 +13,9 @@ class ProductoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($all)
     {
-        $productos = Producto::all();
+        $productos = $all == 1 ? Producto::all() : Producto::paginate(10);
         $masStock = DB::table('productos')
             ->orderBy('stock', 'desc')
             ->limit(1)
